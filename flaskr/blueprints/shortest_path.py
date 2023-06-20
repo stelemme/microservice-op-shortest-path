@@ -35,7 +35,11 @@ def operation():
 
     elif request.method == 'POST':
         # The data is retrieved out of the incoming HTTP POST request.
-        file = request.data
+        start = str(request.form['start'])
+        finish = str(request.form['finish'])
+        accuracy = float(request.form['accuracy'])
+        activate_display = eval(request.form['display'])
+        file = request.files['ifcFile'].read()
 
         timestamp = datetime.datetime.now().timestamp()
         filename = f"ifcFile-{timestamp}.ifc"
@@ -56,6 +60,13 @@ def operation():
 
         graph, dictNameNode = make_graph(ifcspaces, settings)
 
+        if start not in dictNameNode:
+            error_message = {"error": "The start space is not found in the IFC-file."}
+            return jsonify(error_message), 400
+        if finish not in dictNameNode:
+            error_message = {"error": "The finish space is not found in the IFC-file."}
+            return jsonify(error_message), 400
+
         # doors as shapes
         ifcdoors_toDisplay = []
         for edge in graph.GetEdges():
@@ -63,17 +74,10 @@ def operation():
             ifcdoors_toDisplay.append(product)
         door_shapes = get_shapes_to_display(ifcdoors_toDisplay, settings)
 
-        # The input
-        accuracy = 0.4
-        start = "badkamer 001"
-        finish = "lobby"
-
         edgeLabelsToConsider = graph.EdgeLabelsCollection
 
         # Shortest path in meters, so first find all sequences of spaces that connect the start and finish
         sequencelist = graph.AllPaths(dictNameNode[start], dictNameNode[finish], edgeLabelsToConsider)
-        for list in sequencelist:
-            print(list.Count)
 
         # from c# list to python list
         sequencelist_py = []
@@ -82,37 +86,64 @@ def operation():
             for value in sequencelist[i]:
                 sequence_i.append(value)
             sequencelist_py.append(sequence_i)
-          
-        print(sequencelist_py)
 
         summary = "\n"
-        for sequence in sequencelist_py:
-            # Manage display settings
-            display, start_display, add_menu, add_function_to_menu = init_display()
 
-            # the spaces to be displayed as shapes
-            space_shapes_red, space_shapes_blue = get_shapes_to_display_walk_spaces(sequence, settings)
-            for shape in space_shapes_blue: display.DisplayShape(shape[1], transparency=0.7, color=rgb_color(0, 0, 1))
-            for shape in space_shapes_red: display.DisplayShape(shape[1], transparency=0.7, color=rgb_color(1, 0, 0))
+        response = {
+            "start_space": start,
+            "finish_space": finish,
+            "step_length": accuracy,
+            "paths": [],
+        }
 
+        if len(sequencelist_py) == 0:
+            error_message = {"error": "Their is no path found between the start and finish space."}
+            return jsonify(error_message), 400
+
+        for n, sequence in enumerate(sequencelist_py):
             # the walk to be displayed as points
             walk_points, total_steps, vogelvlucht = from_sequence_to_walk(graph, sequence, accuracy)
-            for p in walk_points: display.DisplayShape(p)
 
-            # Display all spaces and doors
-            for node in graph.GetNodes(): display.DisplayShape(node.dynamicProperties["shape"], transparency=0.7)
-            for shape in door_shapes: display.DisplayShape(shape[1], transparency=0.2)
+            if activate_display:
+                # Manage display settings
+                display, start_display, add_menu, add_function_to_menu = init_display()
 
-            start_display()
+                # the spaces to be displayed as shapes
+                space_shapes_red, space_shapes_blue = get_shapes_to_display_walk_spaces(sequence, settings)
+                for shape in space_shapes_blue: display.DisplayShape(shape[1], transparency=0.7, color=rgb_color(0, 0, 1))
+                for shape in space_shapes_red: display.DisplayShape(shape[1], transparency=0.7, color=rgb_color(1, 0, 0))
+                
+                for p in walk_points: display.DisplayShape(p)
 
-            # Destroy display to be able to get a new display
-            del display
-            del start_display
+                # Display all spaces and doors
+                for node in graph.GetNodes(): display.DisplayShape(node.dynamicProperties["shape"], transparency=0.7)
+                for shape in door_shapes: display.DisplayShape(shape[1], transparency=0.2)
+
+                start_display()
+
+                # Destroy display to be able to get a new display
+                del display
+                del start_display
+            
+            path = {
+                "name": f'path_{n}',
+                "total_steps": total_steps,
+                "total_length": accuracy * total_steps,
+                "spaces_passed": len(sequence),
+            }
+
+            response["paths"].append(path)
 
             # The result
             summary += "The walk was " + str(total_steps) + " steps long and one step has a length of " + str(accuracy) + ".\n"
             summary += "Total: " + str(accuracy * total_steps) + "\n"
             summary += "We passed through " + str(len(sequence)) + " spaces (incl. start and finish).\n" + "\n"
+
+        shortest_path = min(response["paths"], key=lambda x: x["total_length"])
+        least_spaces_passed = min(response["paths"], key=lambda x: x["spaces_passed"])
+
+        response["shortest_path"] = shortest_path["name"]
+        response["least_spaces_passed"] = least_spaces_passed["name"]
 
         summary += "Total bird's eye: " + str(vogelvlucht) + "\n"
         print()
@@ -124,7 +155,7 @@ def operation():
         print("The end... for real now.")
         print()
 
-        return {"response": summary}
+        return response
     
     
 

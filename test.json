@@ -1,0 +1,21 @@
+{
+  "start_space": "badkamer 001",
+  "finish_space": "lobby",
+  "step_length": 0.4,
+  "shortest_path": "path_2",
+  "least_spaces_crossed": "path_2",
+  "paths": [
+    {
+      "name": "path_1",
+      "total_steps": 451,
+      "total_length": 180.4,
+      "spaces_passed": 15
+    },
+    {
+      "name": "path_2",
+      "total_steps": 339,
+      "total_length": 135.6,
+      "spaces_passed": 12
+    }
+  ]
+}

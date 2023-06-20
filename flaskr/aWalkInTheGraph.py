@@ -228,7 +228,7 @@ def make_graph(ifcspaces, display_settings):
         # Add the node
         nodes.Add(node)
         dictSpaceNode[space] = node
-        dictNameNode[node.NodeLabel] = node
+        dictNameNode[space.name] = node
 
     print("We found " + str(len(UGspaces)) + " spaces:")
     for ugs in UGspaces:
