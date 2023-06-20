@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QTO Operation Microservice</title>
+  <script>
+    function redirectQto() {
+    var currentURL = window.location.href;
+    var newURL = currentURL + "op/qto";
+    window.location.href = newURL;
+  }
+  </script>
+</head>
+
+<body>
+  <h2>QTO (Quantity Takeoff) Operation Microservice</h2>
+  <p>The QTO Operation Microservice is based on the <a href="https://github.com/stelemme/template-microservice-py">Flask
+      template</a>. A new blueprint is created in the blueprints folder, the qto.py file, which holds the
+    functionality of the QTO Microservice. When running the Microservice, the functionality can be accessed via the
+    following endpoint.</p>
+  <p><a href="javascript:void(0);" onclick="redirectQto();"><script>document.write(window.location.href)</script>op/qto</a></p>
+  <p>This endpoint has a GET and POST method. The GET response of the endpoint returns a JSON object that specifies which methods are supported
+    by the endpoint, in this case a GET and POST method. The JSON object also specifies the data type each method accepts and
+    returns (given as its MIME type). For this endpoint, an LBD-file, given in the Turtle (Terse RDF Triple Language) syntax which
+    expresses the Resource Description Framework (RDF) format, must be sent in a POST request to the endpoint. The endpoint
+    then returns a JSON-LD file with the calculated QTO. This process can be tested using Postman or a Controller Microservice. The
+    QTO is calculated using SPARQL (SPARQL Protocol and RDF Query Language). SPARQL is a query language for the RDF data
+    format, used to retrieve and manipulate data. The Building Topology Ontology (BOT) and PROPS ontology are used to
+    perform this SPARQL query. Similar SPARQL queries can be made to retrieve other elements present in a building project.</p>
+</body>
+
+</html>
