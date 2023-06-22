@@ -30,6 +30,7 @@ Mandatory Paramters:
 - display: A boolean indicating whether or not a graphical display needs to be returned.
 ### Example request
 ```
+url = <the URL>
 payload = {
   'start': 'lobby',
   'finish': 'badkamer 012',
@@ -39,6 +40,8 @@ payload = {
 files=[
   ('ifcFile',<the IFC-file>)
 ]
+
+response = requests.request("POST", url, data=payload, files=files)
 ```
 ### Example response
 ```
