@@ -15,6 +15,7 @@ After the virtual environment is activated the Microservice can be run using the
 ```
 flask --app flaskr run
 ```
+**IMPORTANT**: Add to the root of the Microservice a new folders: "base-files". In this folder, the IFC-files will be temporarily saved during the calculations.
 ## Using the Microservice
 The functionality of this Microservice can be acces via the following endpoint.
   
