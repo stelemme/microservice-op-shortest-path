@@ -28,7 +28,18 @@ Mandatory Paramters:
 - finish: The finish space of the path that needs to be calculated.
 - accuracy: The length of steps in meters.
 - display: A boolean indicating whether or not a graphical display needs to be returned.
-
+### Example request
+```
+payload = {
+  'start': 'lobby',
+  'finish': 'badkamer 012',
+  'accuracy': '0.8',
+  'display': 'False'
+}
+files=[
+  ('ifcFile',<the IFC-file>)
+]
+```
 ### Example response
 ```
 {
