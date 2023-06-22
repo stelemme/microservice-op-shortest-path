@@ -18,7 +18,7 @@ After the virtual environment is activated the Microservice can be run using the
 flask --app flaskr run
 ```
 ## Using the Microservice
-The functionality of this Microservice can be acces via the following endpoint.
+The functionality of this Microservice can be accessed via the following endpoint.
   
 [http://localhost:3000/op/shortest-path](http://localhost:3000/op/shortest-path)
   
