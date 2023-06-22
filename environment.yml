@@ -1,0 +1,13 @@
+name: shortest_path
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - flask
+  - ifcopenshell=v0.7.0a6
+  - pythonocc-core=7.7.0
+  - shapely=2.0.1
+  - pyqt=5.15.7
+  - python-dotenv=1.0.0
+  - pythonnet=3.0.1

@@ -2,13 +2,13 @@
 import ifcopenshell
 from ifcopenshell import geom
 
-# Load OCC functions for displaying shapes
+""" # Load OCC functions for displaying shapes
 from OCC.Display.SimpleGui import init_display
-from OCC.Display.OCCViewer import rgb_color
+from OCC.Display.OCCViewer import rgb_color """
 
 # Load own (new!) functions
 from ..aWalkInTheGraph import get_shapes_to_display, get_shapes_to_display_walk_spaces,\
-                            make_graph, from_sequence_to_walk
+                              make_graph, from_sequence_to_walk
 
 
 from flask import (
@@ -27,7 +27,7 @@ def operation():
     if request.method == 'GET':
         response = make_response({
             "supported_methods": ["GET", "POST"],
-            "POST_request_data": "application/ifc",
+            "POST_request_data": "multipart/form-data",
             "POST_response_data": "application/json",
         })
 
@@ -104,7 +104,7 @@ def operation():
             # the walk to be displayed as points
             walk_points, total_steps, vogelvlucht = from_sequence_to_walk(graph, sequence, accuracy)
 
-            if activate_display:
+            """ if activate_display:
                 # Manage display settings
                 display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -123,7 +123,7 @@ def operation():
 
                 # Destroy display to be able to get a new display
                 del display
-                del start_display
+                del start_display """
             
             path = {
                 "name": f'path_{n}',
